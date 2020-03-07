@@ -20,4 +20,32 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
     //a console.log(of the EMPLOYEE WELCOME MESSAEGE)
+    initApplication();
 });
+
+// Start Application
+const initApplication = () => {
+    inquirer.prompt([
+        {
+        message: "What would you like to do?",
+        type: "list",
+        choices: ["View All Employees", "View All Employees By Department", "Add Employee", "Update Employee Role"],
+        name: "initApplication"
+        }
+    ]).then(({ initApplication }) => {
+        switch (initApplication) {
+        case "View All Employees":
+            viewAll();
+            break;
+        case "View All Employees By Department":
+            viewAllByDepartment();
+            break;
+        case "Add Employee":
+            addEmployee();
+            break;
+        case "Update Employee Role":
+            updateRole();
+            break;
+        }
+    });
+};
