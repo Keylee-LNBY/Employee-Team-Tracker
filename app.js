@@ -74,6 +74,27 @@ const viewAll = () => {
 };
 
 //View All Employees By Department
+const viewAllByDepartment = () => {
+    inquirer.prompt([
+        {
+        message: "Which department would you like to view the employees from?",
+        choices: ["Talent", "Agents", "Marketing", "Legal"],
+        name: "department",
+        type: "list"
+        }
+    ]).then((answer) => {
+        let query = "SELECT e.first_name, e.last_name, r.title, d.name FROM employee e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id WHERE d.name = ?";
+        connection.query(query, [answer.department], function (err, res) {
+            let table = [];
+            for (var i = 0; i < res.length; i++) {
+                table.push({ name: res[i].first_name + " " + res[i].last_name, title: res[i].title, department: res[i].name });
+            };
+            console.log(consoleTable.getTable(table));
+
+            initApplication();
+        });
+    });
+};
 
 //Add an Employee
 const addEmployee = () => {
