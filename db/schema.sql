@@ -1,4 +1,3 @@
-  
 -- if database exists: drop it 
 DROP DATABASE IF EXISTS trackerDB;
 
@@ -36,3 +35,26 @@ CREATE TABLE department (
     name VARCHAR(30),
     PRIMARY KEY (id)
 );
+
+
+-- RUN SEED FILE --
+--Then run below sql code
+SELECT e.id, e.first_name, e.last_name, d.name AS department, r.title, r.salary, CONCAT_WS(" ", m.first_name, m.last_name) AS manager 
+FROM employee e
+LEFT JOIN employee m ON m.id = e.manager_id
+INNER JOIN role r ON e.role_id = r.id 
+INNER JOIN department d ON r.department_id = d.id 
+ORDER BY e.id ASC;
+
+SELECT e.first_name, e.last_name, r.title, d.name FROM employee e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id WHERE d.name = "Marketing";
+
+SELECT id, first_name, last_name, CONCAT_WS(" ", first_name, last_name) AS managers FROM employee;
+
+SELECT id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS employees FROM employee;
+
+DELETE FROM employee WHERE id = 5;
+
+INSERT INTO  employee (first_name, last_name, role_id, manager_id)
+VALUES ("Test", "Case", 5, 5);
+
+SELECT e.first_name, e.last_name, r.title, d.name FROM employee e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id WHERE e.manager_id = 1;
