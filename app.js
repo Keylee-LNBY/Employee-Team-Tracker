@@ -2,6 +2,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const consoleTable = require("console.table");
+const colors = require("colors");
+colors.enable();
 
 // Global Variables
 let roles;
@@ -12,7 +14,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "Iveg0tal0velybunch0fc0c0nuts",
   database: "trackerDB"
 });
 
@@ -68,7 +70,10 @@ const viewAll = () => {
         for (var i = 0; i < res.length; i++) {
             table.push({ id: res[i].id, name: res[i].first_name + " " + res[i].last_name, title: res[i].title, salary: res[i].salary, department: res[i].department, manager: res[i].manager});
         };
-        console.log(consoleTable.getTable(table));
+
+        let tableGray = consoleTable.getTable(table);
+        console.log(tableGray.gray);
+
         initApplication();
     });
 };
@@ -89,7 +94,9 @@ const viewAllByDepartment = () => {
             for (var i = 0; i < res.length; i++) {
                 table.push({ name: res[i].first_name + " " + res[i].last_name, title: res[i].title, department: res[i].name });
             };
-            console.log(consoleTable.getTable(table));
+
+            let tableGray = consoleTable.getTable(table);
+            console.log(tableGray.gray);
 
             initApplication();
         });
