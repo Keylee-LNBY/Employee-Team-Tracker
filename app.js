@@ -70,9 +70,9 @@ const addEmployee = () => {
         managers = res;
         addNewEmployee(roles, managers);
     });
-};
-//The prompts for the information needed to add a new employee to the SQL db
-const addNewEmployee = (roles, managers) => {
+    };
+    //The prompts for the information needed to add a new employee to the SQL db
+    const addNewEmployee = (roles, managers) => {
     //Arrays for the roles listed in the array - used in prompts
     let roleOptions = [];
     let managerOptions = [];
@@ -129,4 +129,67 @@ const addNewEmployee = (roles, managers) => {
         });
     });
 };
+
 //Update an Employee's Role
+const updateRole = () => {
+    let query = "SELECT id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS employees FROM employee";
+    connection.query(query, function (err, res) {
+        let employee = res;
+        updateRolePrompts(roles, employee);
+    });
+    };
+
+    const updateRolePrompts = (roles, employee) => {
+
+    let employeeChoice = [];
+    let roleChoices = [];
+
+    for (i = 0; i < employee.length; i++) {
+        employeeChoice.push(Object.values(employee[i].employees).join(""));
+    };
+
+    for (i = 0; i < roles.length; i++) {
+        roleChoices.push(Object.values(roles[i].title).join(""));
+    };
+
+
+    inquirer.prompt([
+        {
+        message: "Which employee's role do you want to update?",
+        name: "employee",
+        type: "list",
+        choices: employeeChoice
+        },
+        {
+        message: "What is the employee's role?",
+        name: "title",
+        type: "list",
+        choices: roleChoices
+        }
+    ]).then((answers) => {
+
+        let employee_id;
+        let role_id;
+
+        // find role id based off of role name
+        for (i = 0; i < roles.length; i++) {
+        if (roles[i].title === answers.title) {
+            role_id = roles[i].id;
+        };
+        };
+
+        // find employee id based of of employee name
+        for (i = 0; i < employee.length; i++) {
+        if (employee[i].employees === answers.employee) {
+            employee_id = employee[i].id;
+        };
+        };
+
+        var query = ("UPDATE employee SET ? WHERE ?");
+        connection.query(query, [{ role_id: role_id }, { id: employee_id }], function (err, res) {
+        if (err) throw err;
+        initApplication();
+        });
+
+    });
+};
