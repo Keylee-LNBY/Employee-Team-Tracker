@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Keylee-LNBY/Employee-Team-Tracker#readme",
   "dependencies": {
     "inquirer": "^7.0.4",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "console-table": "0.1.2"
   }
 }
