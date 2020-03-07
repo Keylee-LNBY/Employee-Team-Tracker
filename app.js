@@ -60,6 +60,18 @@ const srcByRole = () => {
 
 //Functions for the initApplication Call
 //View all Employees
+const viewAll = () => {
+    let query = 'SELECT e.id, e.first_name, e.last_name, d.name AS department, r.title, r.salary, CONCAT_WS(" ", m.first_name, m.last_name) AS manager FROM employee e LEFT JOIN employee m ON m.id = e.manager_id INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id ORDER BY e.id ASC';
+    
+    connection.query(query, function (err, res) {
+        let table = [];
+        for (var i = 0; i < res.length; i++) {
+            table.push({ id: res[i].id, name: res[i].first_name + " " + res[i].last_name, title: res[i].title, salary: res[i].salary, department: res[i].department, manager: res[i].manager});
+        };
+        console.log(consoleTable.getTable(table));
+        initApplication();
+    });
+};
 
 //View All Employees By Department
 
@@ -137,59 +149,57 @@ const updateRole = () => {
         let employee = res;
         updateRolePrompts(roles, employee);
     });
-    };
-
-    const updateRolePrompts = (roles, employee) => {
-
-    let employeeChoice = [];
-    let roleChoices = [];
+};
+//Runs prompts user will see so that we have the needed information to communicate to SQL & make an update
+const updateRolePrompts = (roles, employee) => {
+    // 
+    let listOfEmployees = [];
+    let listOfRoles = [];
 
     for (i = 0; i < employee.length; i++) {
-        employeeChoice.push(Object.values(employee[i].employees).join(""));
+        listOfEmployees.push(Object.values(employee[i].employees).join(""));
     };
 
     for (i = 0; i < roles.length; i++) {
-        roleChoices.push(Object.values(roles[i].title).join(""));
+        listOfRoles.push(Object.values(roles[i].title).join(""));
     };
-
 
     inquirer.prompt([
         {
-        message: "Which employee's role do you want to update?",
+        message: "Select employee for role update:",
         name: "employee",
         type: "list",
-        choices: employeeChoice
+        choices: listOfEmployees
         },
         {
-        message: "What is the employee's role?",
+        message: "What is the employee's CURRENT role?",
         name: "title",
         type: "list",
-        choices: roleChoices
+        choices: listOfRoles
         }
     ]).then((answers) => {
 
         let employee_id;
         let role_id;
 
-        // find role id based off of role name
-        for (i = 0; i < roles.length; i++) {
-        if (roles[i].title === answers.title) {
-            role_id = roles[i].id;
-        };
-        };
-
-        // find employee id based of of employee name
+        // Search by Employee Name
         for (i = 0; i < employee.length; i++) {
-        if (employee[i].employees === answers.employee) {
-            employee_id = employee[i].id;
+            if (employee[i].employees === answers.employee) {
+                employee_id = employee[i].id;
+            };
         };
+        // Search by Employee Role
+        for (i = 0; i < roles.length; i++) {
+            if (roles[i].title === answers.title) {
+                role_id = roles[i].id;
+            };
         };
 
-        var query = ("UPDATE employee SET ? WHERE ?");
+        let query = ("UPDATE employee SET ? WHERE ?");
+
         connection.query(query, [{ role_id: role_id }, { id: employee_id }], function (err, res) {
-        if (err) throw err;
-        initApplication();
+            if (err) throw err;
+            initApplication();
         });
-
     });
 };
