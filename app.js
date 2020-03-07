@@ -22,6 +22,11 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
     //a console.log(of the EMPLOYEE WELCOME MESSAEGE)
+    // console.log("   \              / ");
+    // console.log("    \            /  ______          _____    ___   __  __   ______");
+    // console.log("     \    /\    /  |        |      /     \  /   \  /  \/  \ |");
+    // console.log("      \  /  \  /   |---     |     |         |   | |       | |---");
+    // console.log("       \/    \/    |______  |_____ \_____/  \___/ |       | |_____");
     srcByRole();
     initApplication();
 });
