@@ -20,6 +20,7 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
     //a console.log(of the EMPLOYEE WELCOME MESSAEGE)
+    srcByRole();
     initApplication();
 });
 
@@ -49,3 +50,25 @@ const initApplication = () => {
         }
     });
 };
+
+const srcByRole = () => {
+    let query = "SELECT id, title FROM role";
+    connection.query(query, function (err, res) {
+        roles = res;
+    });
+};
+
+//Functions for the initApplication Call
+//View all Employees
+
+//View All Employees By Department
+
+//Add an Employee
+const addEmployee = () => {
+    let query = "SELECT id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS managers FROM employee";
+    connection.query(query, function (err, res) {
+        managers = res;
+        employeeGenerator(roles, managers);
+    });
+};
+//Update an Employee's Role
